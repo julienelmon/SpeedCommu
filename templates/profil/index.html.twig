@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title 'Edition de profil' %}
+
+{% block body %}
+
+<img src="{{app.user.UrlPicture}}" width="250" height="200">
+
+<div class="container">
+    <a href="{{ path('profil.edit.add', {id: app.user.id}) }}">Edition de profil</a>
+</div>
+
+{% endblock %}

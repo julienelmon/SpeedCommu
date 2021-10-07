@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title 'SpeedCommu' %}
+
+{% block body %}
+
+<div class="jumbotron text-center">
+    <h1>SpeedCommu</h1>
+    <p>-Crée votre communauté-</p>
+</div>
+
+<div class="jumbotron text-center" style="margin-top: 20px;">
+    <div class="container">
+        {{ form_start(form) }}
+            <div class="col">
+                {{ form_row(form.category) }}
+            </div>
+            <div class="col">   
+                <button class="btn btn-primary">Recherche</button> 
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+
+{% if peoples is not empty %}
+<div class="jumbotron text-center" style="margin-top: 20px;">
+    <div class="container">
+        <h2>Résultat recherche ({{peoples.getTotalItemCount}})</h2>
+        <div class="row-flex">
+            {% for people in peoples %}
+                <div class="col-3">
+                    <div class='card'>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {{people.firstname}}&nbsp{{people.lastname}}
+                                <p class="card-text">
+                                    {{people.category}}
+                                </p>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            {{ knp_pagination_render(peoples, 'base/pagination.html.twig')}}
+        </div>
+    </div>
+{% else %}
+    <div class="container">
+        <h2>Dernière personne inscrite</h2>
+        <div class="row-flex">
+            {% for peopleslastsub in peopleslastsubs %}
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {{peopleslastsub.firstname}}&nbsp{{peopleslastsub.lastname}}
+                            </h5>
+                            <p class="card-text">
+                                {{peopleslastsub.category}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

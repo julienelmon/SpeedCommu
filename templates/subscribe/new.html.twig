@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title 'Création de compte' %}
+
+{% block body %}
+
+<div class="container">
+    <h1>Créer un compte</h1>
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-sm">
+            {{ form_row(form.email) }}
+        </div>
+        <div class="col-sm">
+            {{ form_row(form.plainPassword, {label: 'Password'}) }}
+        </div>
+    </div>
+{{ form_widget(form) }}
+<button class="btn btn-primary">{{button|default('Créer')}}</button>
+{{ form_end(form)}}
+</div>
+{% endblock %}
