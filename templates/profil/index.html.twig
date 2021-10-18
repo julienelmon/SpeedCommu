@@ -8,6 +8,11 @@
 
 <div class="container">
     <a href="{{ path('profil.edit.add', {id: app.user.id}) }}">Edition de profil</a>
+    {% if viewProfilLink is empty %}
+        <a href="{{ path('prodil.addlink', {id: app.user.id}) }}">Ajouter des liens</a>
+    {% else %}
+        <a href="{{ path('profil.link.modif', {id: viewProfilLink.id}) }}">Modifier ces lien</a>
+    {% endif %}
 </div>
 
 {% endblock %}

@@ -23,7 +23,8 @@ class PeopleSearchType extends AbstractType
                 'choices' => [
                     'Développeur WEB' => 'Développeur WEB',
                     'Développeur Logiciel' => 'Développeur Logiciel',
-                    'Vidéaste' => 'Vidéaste'
+                    'Vidéaste' => 'Vidéaste',
+                    'Influenceur' => 'Influenceur'
                 ]
             ])
         ;

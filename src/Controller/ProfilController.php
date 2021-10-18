@@ -3,14 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\Login;
+use App\Entity\SocialNetwork;
+use App\Form\SocialNetworkType;
 use App\Form\SubscribeType;
+use App\Repository\LoginRepository;
+use App\Repository\SocialNetworkRepository;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class ProfilController extends AbstractController
 {
@@ -20,18 +24,23 @@ class ProfilController extends AbstractController
 
     private $em;
 
-     public function __construct(EntityManagerInterface $em)
+     public function __construct(EntityManagerInterface $em, LoginRepository $repositoryLogin, SocialNetworkRepository $repositorySocialNetwork)
      {
         $this->em = $em;
+        $this->repositoryLogin = $repositoryLogin;
+        $this->repositorySocialNetwork = $repositorySocialNetwork;
      }
 
      /**
-      * @Route("/profile", name="profil")
+      * @Route("/profile/{id}", name="profil")
       */
 
-     public function index()
+     public function index($id)
      {
-         return $this->render('profil/index.html.twig');
+        $verifyLink = $this->repositorySocialNetwork->findOneBySomeField($id);
+        return $this->render('profil/index.html.twig', [
+            'viewProfilLink' => $verifyLink,
+        ]);
      }
 
     /**
@@ -51,7 +60,6 @@ class ProfilController extends AbstractController
 
             if($file)
             {
-                $oldPicture = $login->getUrlPicture();
                 $file_name = $file_uploader->upload($file);
 
                 if (null !== $file_name)
@@ -74,7 +82,77 @@ class ProfilController extends AbstractController
             'login' => $login,
             'form' => $form->createView()
         ]);
-     }
+    }
+
+    /**
+     * @Route("/profile/addlink/{id}", name="prodil.addlink")
+     * @param Login $login
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+
+    public function addProfile(Login $login, Request $request)
+    {
+        $socialNetwork = new SocialNetwork();
+        $form = $this->createForm(SocialNetworkType::class, $socialNetwork);
+        $form->handleRequest($request);
+        
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $socialNetwork->setLogin($login);
+            $this->em->persist($socialNetwork);
+            $this->em->flush();
+            $this->addFlash('success', 'Lien ajouté avec succès');
+            return $this->redirectToRoute('home');
+        }
+        
+        return $this->render('profil/addlink.html.twig', [
+            'form' => $form->createView()
+        ]);
+        
+    }
+
+    /**
+     * @Route("/profile/viewuser/{id}", name="profil.view")
+     * @param Login $id
+     */
+
+    public function profilView($id)
+    {
+        $viewProfil = $this->repositoryLogin->find($id);
+        $viewProfilLink = $this->repositorySocialNetwork->findOneBySomeField($id);
+
+        return $this->render('profil/profilview.html.twig', [
+            'viewProfil' => $viewProfil,
+            'viewProfilLink' => $viewProfilLink
+        ]);
+    }
+    
+    /**
+     * @Route("/profile/editlink/{id}", name="profil.link.modif")
+     * @param Login $id
+     * @param SocialNetwork $socialNetwork
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+
+    public function editLink(SocialNetwork $socialNetwork, Request $request)
+    {
+        $form = $this->createForm(SocialNetworkType::class, $socialNetwork);
+        $form->handleRequest($request);
+        dump('test');
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $this->em->flush();
+            $this->addFlash('success', 'Lien mis à jour avec succès');
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('profil/editlink.html.twig', [
+            'socialNetwork' => $socialNetwork, 
+            'form' => $form->createView()
+        ]);
+    }
 }
 
 ?>

@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title 'Profil' %}
+
+  {% block body %}
+
+    <div class="jumbotron">
+      <img src="{{viewProfil.UrlPicture}}">
+      <h2>{{viewProfil.firstname}}&nbsp{{viewProfil.lastname}}</h2>
+      <p>{{viewProfil.category}}</p>
+      <p>
+        Email Pro :
+        {{viewProfil.email}}</p>
+    </div>
+
+    {% if viewProfilLink is not empty %}
+        {% if viewProfilLink.linkFB is not empty %}
+        <a href="{{viewProfilLink.linkFB}}"><i class="fa fa-facebook-square" style="font-size:36px"></i></a>
+        {% endif %}
+        {% if viewProfilLink.linkInstagram is not empty %}
+        <a href="{{viewProfilLink.linkInstagram}}"><i class="fa fa-instagram" style="font-size:36px;color: orange;"></i></a>
+        {% endif %}
+        {% if viewProfilLink.linkTwitter is not empty %}
+        <a href="{{viewProfilLink.linkTwitter}}"><i class="fa fa-twitter" style="font-size:36px;color:skyblue;"></i></a>
+        {% endif %}
+        {% if viewProfilLink.linkTumblr is not empty %}
+        <a href="{{viewProfilLink.linkTumblr}}"><i class="fa fa-tumblr-square" style="font-size:36px"></i></a>
+        {% endif %}
+        {% if viewProfilLink.linkDeviantArt is not empty %}
+        <a href="{{viewProfilLink.linkDeviantArt}}"><i class="fa fa-deviantart" style="font-size:36px;color: green;"></i></a>
+        {% endif %}
+        {% if viewProfilLink.linkGithub is not empty %}
+        <a href="{{viewProfilLink.linkGithub}}"><i class="fa fa-github" style="font-size:36px;color: black;"></i></a>
+        {% endif %}
+    {% endif %}
+
+  {% endblock %}
