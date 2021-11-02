@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title 'SC - Post abonnement' %}
+
+  {% block body %}
+    <div class="jumbotron text-center">
+      {{ form_start(form) }}
+      <button type='submit' class="btn btn-primary">Envoyer</button>
+      {{ form_end(form) }}
+    </div>
+    <div class="jumbotron text-center">
+      <h2>Actualité</h2>
+            {% for post in posts %}
+                <p>{{post.author}}</p>
+                <p>{{post.text|raw}}</p>
+                <p>{{post.DateCreated|date("d/m/Y")}}</p>
+            {% endfor %}
+    </div>
+  {% endblock %}

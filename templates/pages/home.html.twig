@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title 'SpeedCommu' %}
+{% block title 'SC - Accueil' %}
 
   {% block body %}
 
@@ -28,7 +28,7 @@
           <h2>Résultat recherche ({{peoples.getTotalItemCount}})</h2>
           <div class="row-flex">
             {% for people in peoples %}
-                <a href="{{ path('profil.view', {id: people.id}) }}" style="text-decoration: none;">
+                <a href="{{ path('profil.view', {id: people.id, iduser: app.user.id}) }}" style="text-decoration: none;">
                     <div class="col">
                         <div class='card'>
                         <div class="card-body">
@@ -54,7 +54,7 @@
           <h2>Dernière personne inscrite</h2>
           <div class="row-flex">
             {% for peopleslastsub in peopleslastsubs %}
-                <a href="{{ path('profil.view', {id: peopleslastsub.id}) }}" style="text-decoration: none;">
+                <a href="{{ path('profil.view', {id: peopleslastsub.id, iduser: app.user.id}) }}" style="text-decoration: none;">
                     <div class="col">
                         <div class='card'>
                         <div class="card-body">

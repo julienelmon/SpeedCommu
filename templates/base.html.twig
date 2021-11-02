@@ -27,7 +27,10 @@
             {% if app.user %}
               <li>
                 <a class="nav-link active" href="{{ path('profil', {id: app.user.id}) }}">
-                    <img src="{{app.user.UrlPicture}}" width="35" height="35">&nbsp{{app.user.email}}</a>
+                    <img src="/{{app.user.UrlPicture}}" width="35" height="35">&nbsp{{app.user.email}}</a>
+              </li>
+              <li>
+                <a class="nav-link active" href="{{ path('post', {id: app.user.id}) }}">Post</a>
               </li>
               <li>
                 <a class="nav-link active" href="{{ path('app_logout') }}">

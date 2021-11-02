@@ -86,4 +86,15 @@ class LoginRepository extends ServiceEntityRepository implements PasswordUpgrade
             ->getResult()
         ;
     }
+    /*
+    public function findByFollowId($value)
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.post = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    */
 }

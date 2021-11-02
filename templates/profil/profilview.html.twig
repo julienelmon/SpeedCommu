@@ -1,11 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title 'Profil' %}
+{% block title %}{{viewProfil.firstname}}&nbsp{{viewProfil.lastname}}
+{% endblock %}
 
   {% block body %}
 
     <div class="jumbotron">
-      <img src="{{viewProfil.UrlPicture}}">
+      <img src="/{{viewProfil.UrlPicture}}" width="70" height="70">
       <h2>{{viewProfil.firstname}}&nbsp{{viewProfil.lastname}}</h2>
       <p>{{viewProfil.category}}</p>
       <p>
@@ -33,5 +34,12 @@
         <a href="{{viewProfilLink.linkGithub}}"><i class="fa fa-github" style="font-size:36px;color: black;"></i></a>
         {% endif %}
     {% endif %}
+      {% if viewProfilFollow is not empty %} 
+        <a href="#">Se désabonner</a>
+      {% elseif viewProfilPost == null %}
+        <p>Ce compte n'a encore rien publié, vous ne pouvez donc pas vous abbonnez</p>
+      {% else %}
+        <a class="btn btn-primary" href="{{ path('profil.follow.add', {id: viewProfil.id, iduser: app.user.id}) }}">S'abonner</a>
+      {% endif %}
 
   {% endblock %}

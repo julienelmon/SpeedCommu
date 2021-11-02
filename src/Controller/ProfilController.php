@@ -3,18 +3,21 @@
 namespace App\Controller;
 
 use App\Entity\Login;
+use App\Entity\Follow;
 use App\Entity\SocialNetwork;
 use App\Form\SocialNetworkType;
 use App\Form\SubscribeType;
 use App\Repository\LoginRepository;
 use App\Repository\SocialNetworkRepository;
+use App\Repository\FollowRepository;
+use App\Repository\PostRepository;
+
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class ProfilController extends AbstractController
 {
@@ -24,11 +27,13 @@ class ProfilController extends AbstractController
 
     private $em;
 
-     public function __construct(EntityManagerInterface $em, LoginRepository $repositoryLogin, SocialNetworkRepository $repositorySocialNetwork)
+     public function __construct(EntityManagerInterface $em, LoginRepository $repositoryLogin, SocialNetworkRepository $repositorySocialNetwork, FollowRepository $repositoryFollow, PostRepository $repositoryPost)
      {
         $this->em = $em;
         $this->repositoryLogin = $repositoryLogin;
         $this->repositorySocialNetwork = $repositorySocialNetwork;
+        $this->repositoryFollow = $repositoryFollow;
+        $this->repositoryPost = $repositoryPost;
      }
 
      /**
@@ -113,18 +118,23 @@ class ProfilController extends AbstractController
     }
 
     /**
-     * @Route("/profile/viewuser/{id}", name="profil.view")
+     * @Route("/profile/viewuser/{id}/{iduser}", name="profil.view")
      * @param Login $id
      */
 
-    public function profilView($id)
+    public function profilView($id, $iduser)
     {
         $viewProfil = $this->repositoryLogin->find($id);
         $viewProfilLink = $this->repositorySocialNetwork->findOneBySomeField($id);
+        $viewProfilFollow = $this->repositoryFollow->findOneBySomeField($iduser, $id);
+        $viewProfilPost = $this->repositoryPost->findOneBy(['user' => $id]);
+        dump($viewProfilPost);
 
         return $this->render('profil/profilview.html.twig', [
             'viewProfil' => $viewProfil,
-            'viewProfilLink' => $viewProfilLink
+            'viewProfilLink' => $viewProfilLink,
+            'viewProfilFollow' => $viewProfilFollow,
+            'viewProfilPost' => $viewProfilPost,
         ]);
     }
     
@@ -140,7 +150,6 @@ class ProfilController extends AbstractController
     {
         $form = $this->createForm(SocialNetworkType::class, $socialNetwork);
         $form->handleRequest($request);
-        dump('test');
 
         if($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
@@ -152,6 +161,22 @@ class ProfilController extends AbstractController
             'socialNetwork' => $socialNetwork, 
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/profile/follow/{id}/{iduser}", name="profil.follow.add")
+     * @param Request $request
+     */
+
+    public function addFollow(Login $id, $iduser)
+    {
+        $follow = new Follow();
+        $follow->setUserId($iduser);
+        $follow->setFollowId($id->getId());
+
+        $this->em->persist($follow);
+        $this->em->flush();
+        return $this->redirectToRoute('home');
     }
 }
 
